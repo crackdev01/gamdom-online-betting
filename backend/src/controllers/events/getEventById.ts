@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { param } from "express-validator";
 import HttpStatus from "http-status";
-import { errorHandlerWrapper } from "utils";
+import { sportsEventsService } from "services";
+import { errorHandlerWrapper, NotFoundError } from "utils";
 
 export const getEventByIdArgumentValidator = () => {
     return [
@@ -12,9 +13,13 @@ export const getEventByIdArgumentValidator = () => {
 const getEventById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    console.log('Get Event By ID', id);
+    const event = await sportsEventsService.getEventById(Number(id));
 
-    res.status(HttpStatus.OK).json({ id });
+    if (!event) {
+        throw new NotFoundError('Event not found');
+    }
+
+    res.status(HttpStatus.OK).json(event);
 };
 
 export const getEventByIdHandler = errorHandlerWrapper(getEventById);

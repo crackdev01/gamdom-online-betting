@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { body } from "express-validator";
 import HttpStatus from "http-status";
+import { sportsEventsService } from "services";
 import { errorHandlerWrapper } from "utils";
 
 interface CreateEventRequest {
@@ -26,10 +27,12 @@ const createEvent = async (
   res: Response
 ) => {
   const { name, description, odds } = req.body;
-
-  console.log('Create Event', name, description, odds);
-
-  res.status(HttpStatus.CREATED).json(req.body);
+  const event = await sportsEventsService.createEvent({
+    name,
+    description,
+    odds,
+  });
+  res.status(HttpStatus.CREATED).json(event);
 };
 
 export const createEventHandler = errorHandlerWrapper(createEvent);

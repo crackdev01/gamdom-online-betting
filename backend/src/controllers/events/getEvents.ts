@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import HttpStatus from "http-status";
+import { sportsEventsService } from "services";
 import { errorHandlerWrapper } from "utils";
 
 export const getEventsArgumentValidator = () => {
@@ -7,9 +8,8 @@ export const getEventsArgumentValidator = () => {
 }
     
 const getEvents = async (_req: Request, res: Response) => {
-  console.log('Get Events');
-  
-  res.status(HttpStatus.OK).json([]);
+  const events = await sportsEventsService.getEvents();
+  res.status(HttpStatus.OK).json(events);
 };
 
 export const getEventsHandler = errorHandlerWrapper(getEvents);

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { param } from "express-validator";
 import HttpStatus from "http-status";
-import { errorHandlerWrapper } from "utils";
+import { sportsEventsService } from "services";
+import { errorHandlerWrapper, NotFoundError } from "utils";
 
 export const deleteEventArgumentValidator = () => {
     return [
@@ -12,9 +13,15 @@ export const deleteEventArgumentValidator = () => {
 const deleteEvent = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    console.log('Delete Event', id);
-   
-    res.status(HttpStatus.OK).json({deleted: true});
+    const event = await sportsEventsService.getEventById(Number(id));
+
+    if(event) {
+        const deleted = await sportsEventsService.deleteEvent(Number(id));
+    
+        res.status(HttpStatus.OK).json({deleted});
+    } else {
+        throw new NotFoundError('Event not found');
+    }
 
 };
 
