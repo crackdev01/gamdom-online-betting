@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import express from "express";
+import router from "routes";
 import { errorHandlerMiddleware, requestLoggerMiddleware } from "middlewares";
 import { DBConnect, logger } from "utils";
 import cors from "cors";
@@ -26,6 +27,7 @@ databaseSetup(async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(requestLoggerMiddleware);
+  app.use("/api/v1", router);
   app.use(errorHandlerMiddleware);
 
   app.listen(PORT, () => {
